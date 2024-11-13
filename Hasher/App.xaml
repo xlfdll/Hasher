@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Icons.Hasher.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Resources/Styles.App.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Resources/Styles.ToolBar.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Resources/Styles.StatusBar.xaml"/>

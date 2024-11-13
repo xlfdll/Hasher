@@ -49,15 +49,5 @@ namespace Hasher
                 }
             }
         }
-
-        private void QueueExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            // TODO: Save current height
-        }
-
-        private void QueueExpander_Collapsed(object sender, RoutedEventArgs e)
-        {
-            QueueRowDefinition.Height = GridLength.Auto;
-        }
     }
 }

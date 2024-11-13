@@ -14,13 +14,34 @@
             <RowDefinition Height="40"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition x:Name="QueueRowDefinition" Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True"
+                 Style="{StaticResource ModernToolBarStyle}"
                  DataContext="{Binding Path=ToolBarViewModel}">
-
+            <Separator/>
+            <Button Command="{Binding Path=BrowseCommand}">
+                <StackPanel>
+                    <Image Source="{StaticResource BrowseIcon}"/>
+                    <AccessText Text="Browse..."/>
+                </StackPanel>
+            </Button>
+            <Separator/>
+            <Button Command="{Binding Path=ScanCommand}">
+                <StackPanel>
+                    <Image Source="{StaticResource ScanIcon}"/>
+                    <AccessText Text="Scan..."/>
+                </StackPanel>
+            </Button>
+            <Separator/>
+            <Button Command="{Binding Path=AboutCommand}">
+                <StackPanel>
+                    <Image Source="{StaticResource AboutIcon}"/>
+                    <AccessText Text="_About"/>
+                </StackPanel>
+            </Button>
+            <Separator/>
         </ToolBar>
 
         <ListView x:Name="FileHashListView" Grid.Row="1"
@@ -38,27 +59,157 @@
             </ListView.View>
         </ListView>
 
-        <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3">
-            <GridSplitter.Style>
-                <Style TargetType="GridSplitter">
+        <Grid Grid.Row="2" DataContext="{Binding Path=SelectedFile}">
+            <Grid.Style>
+                <Style TargetType="Grid">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsExpanded, ElementName=QueueExpander}" Value="False">
+                        <DataTrigger Binding="{Binding Path=SelectedFile}" Value="{x:Null}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </GridSplitter.Style>
-        </GridSplitter>
+            </Grid.Style>
+            <Grid.Resources>
+                <Style TargetType="Grid">
+                    <Setter Property="Margin" Value="50,20"/>
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Margin" Value="1"/>
+                </Style>
+                <Style TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+                    <Setter Property="Margin" Value="1"/>
+                    <Setter Property="Padding" Value="5"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <Expander x:Name="QueueExpander" Grid.Row="3" Header="Processing Queue"
-                  Expanded="QueueExpander_Expanded" Collapsed="QueueExpander_Collapsed">
-            <ItemsControl MinHeight="150">
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                       Text="{Binding Path=FileName}"/>
 
-            </ItemsControl>
-        </Expander>
+            <Label Grid.Row="1" Grid.Column="0" Content="Path"/>
+            <TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True"
+                     Text="{Binding Path=FilePath}"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="Copy"/>
 
-        <StatusBar Grid.Row="4" Style="{StaticResource ModernStatusBarStyle}">
-            
+            <Label Grid.Row="2" Grid.Column="0" Content="SHA256"/>
+            <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True"
+                     Text="{Binding Path=SHA256}"/>
+            <Button Grid.Row="2" Grid.Column="2" Content="Copy"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="SHA1"/>
+            <TextBox Grid.Row="3" Grid.Column="1" IsReadOnly="True"
+                     Text="{Binding Path=SHA1}"/>
+            <Button Grid.Row="3" Grid.Column="2" Content="Copy"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="MD5"/>
+            <TextBox Grid.Row="4" Grid.Column="1" IsReadOnly="True"
+                     Text="{Binding Path=MD5}"/>
+            <Button Grid.Row="4" Grid.Column="2" Content="Copy"/>
+
+            <Label Grid.Row="5" Grid.Column="0" Content="CRC32"/>
+            <TextBox Grid.Row="5" Grid.Column="1" IsReadOnly="True"
+                     Text="{Binding Path=CRC32}"/>
+            <Button Grid.Row="5" Grid.Column="2" Content="Copy"/>
+
+            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
+                        Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Copy All Information"/>
+            </StackPanel>
+        </Grid>
+
+        <StatusBar Grid.Row="3" Style="{StaticResource ModernStatusBarStyle}">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <Separator Grid.Column="0"/>
+            <StatusBarItem Grid.Column="1">
+                <TextBlock Text="{Binding Path=Status, FallbackValue=Ready.}"/>
+            </StatusBarItem>
+            <Separator Grid.Column="2">
+                <Separator.Style>
+                    <Style TargetType="Separator">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsBusy}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Separator.Style>
+            </Separator>
+            <ProgressBar Grid.Column="3">
+                <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsBusy}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+            <Separator Grid.Column="4">
+                <Separator.Style>
+                    <Style TargetType="Separator">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsBusy}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Separator.Style>
+            </Separator>
+            <StatusBarItem Grid.Column="5">
+                <StatusBarItem.Style>
+                    <Style TargetType="StatusBarItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsBusy}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>
+                    <Hyperlink Command="{Binding Path=CancelProcessingCommand}"
+                               CommandParameter="1">
+                        Cancel Current
+                    </Hyperlink>
+                    </TextBlock>
+                    <TextBlock>
+                    <Hyperlink Command="{Binding Path=CancelProcessingCommand}"
+                               CommandParameter="*">
+                        Cancel All
+                    </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>
