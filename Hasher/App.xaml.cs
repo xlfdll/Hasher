@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 
+using Xlfdll.Diagnostics;
+
 namespace Hasher
 {
     /// <summary>
@@ -7,5 +9,7 @@ namespace Hasher
     /// </summary>
     public partial class App : Application
     {
+        public static AssemblyMetadata Metadata => AssemblyMetadata.EntryAssemblyMetadata;
+        public static new MainWindow MainWindow => App.Current.MainWindow as MainWindow;
     }
 }

@@ -16,6 +16,11 @@ namespace Hasher
             InitializeComponent();
         }
 
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = new MainViewModel();
+        }
+
         private void MainWindow_PreviewDragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
